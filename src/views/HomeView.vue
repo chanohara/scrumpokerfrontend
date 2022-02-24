@@ -1,9 +1,8 @@
 <script setup>
-import TheWelcome from '@/components/TheWelcome.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <div> <p> <h1>Scrum Planning Poker</h1> </p> </div>
   </main>
 </template>
