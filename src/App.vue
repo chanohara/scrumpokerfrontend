@@ -5,7 +5,6 @@ import axios from 'axios'
 
 <template>
   <header>
-
     <div class="wrapper">
     </div>
   </header>

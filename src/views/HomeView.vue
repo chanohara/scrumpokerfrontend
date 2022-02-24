@@ -1,10 +1,11 @@
 <script setup>
 import axios from 'axios'
+import router from '../router';
 </script>
 
 <template>
   <main>
-    <div> <p> <h1>Scrum Planning Poker</h1> </p> </div>
+    <div><p><h1>Scrum Planning Poker</h1></p></div>
     <input v-model="name" placeholder="Enter User Name">
     <br>
     <br>
@@ -23,12 +24,16 @@ import axios from 'axios'
         data() {
             return {
               name : "Dennis"
-              }
+            }
         },
          methods: {
            
            createRoom(){
-              axios.post('http://localhost:3001/room', { this.name } );
+             axios
+              .post('http://localhost:3000/rooms', { name: this.name } )
+              .then( res => {
+                router.push({ name: "room", params: { extRoomId: res.data.roomId } } ); 
+              });
            },
            joinRoom(){
              alert('Joined');
