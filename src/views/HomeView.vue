@@ -1,5 +1,6 @@
 <script setup>
-import axios from 'axios'
+import axios from 'axios';
+import cookies from 'vue-cookies';
 import router from '../router';
 </script>
 
@@ -15,7 +16,7 @@ import router from '../router';
     <br>
     <button class="btn btn-indigo outline" @click="joinRoom">Join Room
     </button>
-    <input v-model="room" placeholder="Enter Room ID">
+    <input v-model="roomId" placeholder="Enter Room ID">
   </main>
 </template>
 
@@ -23,7 +24,8 @@ import router from '../router';
     export default {
         data() {
             return {
-              name : "Dennis"
+              name : "Dennis",
+              roomId: 0,
             }
         },
          methods: {
@@ -32,11 +34,25 @@ import router from '../router';
              axios
               .post('http://localhost:3000/rooms', { name: this.name } )
               .then( res => {
+                let d = new Date();
+                d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
+                let expires = "expires=" + d.toUTCString();
+                document.cookie =
+                  "userId=" + res.data.userId + ";" + expires + ";path=/";              
                 router.push({ name: "room", params: { extRoomId: res.data.roomId } } ); 
               });
            },
            joinRoom(){
-             alert('Joined');
+             axios
+              .post('http://localhost:3000/rooms/join', { roomId: this.roomId, name: this.name } )
+              .then( res => {
+                let d = new Date();
+                d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
+                let expires = "expires=" + d.toUTCString();
+                document.cookie =
+                  "userId=" + res.data.userId + ";" + expires + ";path=/";              
+                router.push({ name: "room", params: { extRoomId: this.roomId } } ); 
+              });
            } 
          }
     }

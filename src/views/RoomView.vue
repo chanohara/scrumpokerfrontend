@@ -11,7 +11,7 @@ export default {
         }
     },
     props: ['extRoomId'],
-    mounted() {
+    created() {
         console.log(this.extRoomId);
     }
 }
