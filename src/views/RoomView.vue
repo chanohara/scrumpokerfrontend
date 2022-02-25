@@ -25,6 +25,20 @@ Please estimate:
     </li>
   </ul>
 </div>
+<br>
+<div>
+  <button class="btn btn-indigo outline" v-if="isAdmin(ownerId)" @click="reveal()">Reveal</button>   
+</div>
+<br>
+<div>
+  <p v-if="revealed == 1">
+    The average vote is: {{ averageVote }}
+  </p>
+  <p v-else>
+    Voting in process.
+  </p>
+</div>
+
 </template>
 
 <script>
@@ -33,9 +47,11 @@ export default {
         return {
             revealed: false,
             users: [ { name: "Alex", vote: 99 } ],
+            ownerId: 1,
             roomId: this.extRoomId,
             fibonacci: [1,2,3,5,8,13,21,34,55,89],
             connection: null,
+            averageVote: 0
         }
     },
     props: ['extRoomId'],
@@ -75,8 +91,24 @@ export default {
         for (let i in response.data) {
             this.users.push( { name: response.data[i].name, vote: response.data[i].current_vote });
             this.revealed = response.data[i].revealed;
-        }             
+            this.ownerId = response.data[i].ownerId;
+            this.averageVote = response.data[i].average_vote;
+        }  
       },
+      reveal(){
+        axios
+        .post('http://localhost:3000/rooms/reveal', { roomId: this.roomId } )
+        .then( res => {
+          router.push( {name: 'room', params: { extRoomId: this.roomId } });
+        });
+      },       
+      isAdmin(user){
+        if(user == $cookies.get("userId")){
+            return true;
+          } else {
+            return false;
+          }
+      }
     }
 }
 </script>
