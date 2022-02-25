@@ -34,25 +34,48 @@ export default {
             revealed: false,
             users: [ { name: "Alex", vote: 99 } ],
             roomId: this.extRoomId,
-            fibonacci: [1,2,3,5,8,13,21,34,55,89]
+            fibonacci: [1,2,3,5,8,13,21,34,55,89],
+            connection: null,
         }
     },
     props: ['extRoomId'],
     async created() {
+        console.log("Starting connection to WebSocket Server")
+        this.connection = new WebSocket("ws://localhost:3000/")
+
+        const v = this;
+
+        this.connection.onmessage = function(event) {
+          axios.get("http://localhost:3000/rooms/" + v.roomId)
+            .then( res => {
+              v.users = [];
+              for (let i in res.data) {
+                v.users.push( { name: res.data[i].name, vote: res.data[i].current_vote });
+                v.revealed = res.data[i].revealed;
+              }
+            });
+        }
+
+        this.connection.onopen = function(event) {
+          console.log("Successfully connected to the echo websocket server...")
+        }
+        await this.loadData();          
+    },
+    methods: {      
+      voteClicked(vote){
+        axios
+          .post('http://localhost:3000/rooms/vote', { roomId: this.roomId, userId: $cookies.get("userId"), vote: vote } )
+          .then( res => {
+            router.push( {name: 'room', params: { extRoomId: this.roomId } });
+          });
+      },
+      async loadData() { 
         const response = await axios.get("http://localhost:3000/rooms/" + this.roomId);
         this.users = [];
         for (let i in response.data) {
             this.users.push( { name: response.data[i].name, vote: response.data[i].current_vote });
             this.revealed = response.data[i].revealed;
-        }  
-    },
-    methods: {      
-      voteClicked(vote){
-        axios
-        .post('http://localhost:3000/rooms/vote', { roomId: this.roomId, userId: $cookies.get("userId"), vote: vote } )
-        .then( res => {
-          router.push( {name: 'room', params: { extRoomId: this.roomId } });
-        });
+        }             
       },
     }
 }
