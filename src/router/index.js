@@ -11,7 +11,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/room',
+      path: '/room/:extRoomId',
       name: 'room',
       component: RoomView,
       props: route => ({ extRoomId: route.params.extRoomId })

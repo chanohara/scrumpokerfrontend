@@ -37,9 +37,8 @@ import router from '../router';
                 let d = new Date();
                 d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
                 let expires = "expires=" + d.toUTCString();
-                document.cookie =
-                  "userId=" + res.data.userId + ";" + expires + ";path=/";              
-                router.push({ name: "room", params: { extRoomId: res.data.roomId } } ); 
+                $cookies.set("userId",res.data.userId,"1d");
+                router.push( {name: 'room', params: { extRoomId: res.data.roomId } });
               });
            },
            joinRoom(){
@@ -49,8 +48,7 @@ import router from '../router';
                 let d = new Date();
                 d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
                 let expires = "expires=" + d.toUTCString();
-                document.cookie =
-                  "userId=" + res.data.userId + ";" + expires + ";path=/";              
+                $cookies.set("userId",res.data.userId,"1d");    
                 router.push({ name: "room", params: { extRoomId: this.roomId } } ); 
               });
            } 
