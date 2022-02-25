@@ -68,6 +68,8 @@ export default {
               for (let i in res.data) {
                 v.users.push( { name: res.data[i].name, vote: res.data[i].current_vote });
                 v.revealed = res.data[i].revealed;
+                v.ownerId = res.data[i].ownerId;
+                v.averageVote = res.data[i].average_vote;                
               }
             });
         }
