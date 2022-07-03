@@ -57,12 +57,12 @@ export default {
     props: ['extRoomId'],
     async created() {
         console.log("Starting connection to WebSocket Server")
-        this.connection = new WebSocket("ws://localhost:3000/")
+        this.connection = new WebSocket(import.meta.env.VITE_WS_ENDPOINT)
 
         const v = this;
 
         this.connection.onmessage = function(event) {
-          axios.get("http://localhost:3000/rooms/" + v.roomId)
+          axios.get(`${import.meta.env.VITE_BACKEND_API}/rooms/` + v.roomId)
             .then( res => {
               v.users = [];
               for (let i in res.data) {
@@ -75,20 +75,20 @@ export default {
         }
 
         this.connection.onopen = function(event) {
-          console.log("Successfully connected to the echo websocket server...")
+          console.log("Successfully connected to the websocket server")
         }
         await this.loadData();          
     },
     methods: {      
       voteClicked(vote){
         axios
-          .post('http://localhost:3000/rooms/vote', { roomId: this.roomId, userId: $cookies.get("userId"), vote: vote } )
+          .post(`${import.meta.env.VITE_BACKEND_API}/rooms/vote`, { roomId: this.roomId, userId: $cookies.get("userId"), vote: vote } )
           .then( res => {
             router.push( {name: 'room', params: { extRoomId: this.roomId } });
           });
       },
       async loadData() { 
-        const response = await axios.get("http://localhost:3000/rooms/" + this.roomId);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_API}/rooms/` + this.roomId);
         this.users = [];
         for (let i in response.data) {
             this.users.push( { name: response.data[i].name, vote: response.data[i].current_vote });
@@ -99,7 +99,7 @@ export default {
       },
       reveal(){
         axios
-        .post('http://localhost:3000/rooms/reveal', { roomId: this.roomId } )
+        .post(`${import.meta.env.VITE_BACKEND_API}/rooms/reveal`, { roomId: this.roomId } )
         .then( res => {
           router.push( {name: 'room', params: { extRoomId: this.roomId } });
         });

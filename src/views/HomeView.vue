@@ -32,7 +32,7 @@ import router from '../router';
            
            createRoom(){
              axios
-              .post('http://localhost:3000/rooms', { name: this.name } )
+              .post(`${import.meta.env.VITE_BACKEND_API}/rooms`, { name: this.name } )
               .then( res => {
                 let d = new Date();
                 d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
@@ -43,7 +43,7 @@ import router from '../router';
            },
            joinRoom(){
              axios
-              .post('http://localhost:3000/rooms/join', { roomId: this.roomId, name: this.name } )
+              .post(`${import.meta.env.VITE_BACKEND_API}/rooms/join`, { roomId: this.roomId, name: this.name } )
               .then( res => {
                 let d = new Date();
                 d.setTime(d.getTime() + 1 * 24 * 60 * 60 * 1000);
